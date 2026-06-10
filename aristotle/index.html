@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アリストテレス集中講義 — 6AIシラバス比較</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf8f4;
+    --surface: #fff9f5;
+    --ink: #2a1f1a;
+    --sepia: #4a3728;
+    --warm: #9a7860;
+    --rule: #e8d8cc;
+    --border: #ecddd4;
+    --petal: #f5e8d8;
+    --dahlia: #c4506a;
+    --dahlia-light: #f7e8ec;
+    --ranunculus: #e07090;
+    --leaf: #7a9e6e;
+    --gold: #c9a84c;
+    --claude:   #c9a84c;
+    --chatgpt:  #10a37f;
+    --gemini:   #4285f4;
+    --copilot:  #0078d4;
+    --grok:     #e04444;
+    --spark:    #9b59b6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+
+  /* BACK */
+  .back-bar {
+    background: rgba(253,248,244,0.97);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    backdrop-filter: blur(8px);
+  }
+
+  .back-link { font-family: 'Cormorant Garamond', serif; font-size: 0.78rem; color: var(--dahlia); text-decoration: none; letter-spacing: 0.1em; transition: opacity 0.2s; }
+  .back-link:hover { opacity: 0.7; }
+  .back-sep { color: var(--rule); }
+  .back-current { font-family: 'Cormorant Garamond', serif; font-size: 0.78rem; color: var(--warm); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 4rem 1.5rem 3rem;
+    border-bottom: 1px solid var(--rule);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '全15講';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(5rem, 20vw, 14rem);
+    font-weight: 700;
+    color: rgba(201,168,76,0.05);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .hero-inner { position: relative; z-index: 1; }
+
+  .hero-eyebrow { font-family: 'Cormorant Garamond', serif; font-size: 0.68rem; letter-spacing: 0.4em; color: var(--dahlia); text-transform: uppercase; margin-bottom: 0.8rem; }
+
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 700; color: var(--sepia); line-height: 1.2; margin-bottom: 0.4rem; }
+
+  h1 em { font-style: italic; color: var(--dahlia); }
+
+  .hero-sub { font-family: 'Cormorant Garamond', serif; font-size: 0.82rem; color: var(--warm); letter-spacing: 0.15em; margin-top: 0.8rem; }
+
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 1rem auto;
+    color: var(--ranunculus);
+  }
+  .ornament::before, .ornament::after { content: ''; display: block; width: 50px; height: 1px; background: linear-gradient(90deg, transparent, var(--ranunculus)); }
+  .ornament::after { background: linear-gradient(90deg, var(--ranunculus), transparent); }
+
+  /* AI LEGEND */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    justify-content: center;
+    background: var(--surface);
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem;
+    color: var(--warm);
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .legend-item:hover, .legend-item.active {
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .legend-item[data-ai="all"].active, .legend-item[data-ai="all"]:hover { background: var(--sepia); }
+  .legend-item[data-ai="claude"].active  { background: var(--claude); }
+  .legend-item[data-ai="chatgpt"].active { background: var(--chatgpt); }
+  .legend-item[data-ai="gemini"].active  { background: var(--gemini); }
+  .legend-item[data-ai="copilot"].active { background: var(--copilot); }
+  .legend-item[data-ai="grok"].active    { background: var(--grok); }
+  .legend-item[data-ai="spark"].active   { background: var(--spark); }
+
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* OVERVIEW SECTION */
+  .overview {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .overview-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--warm);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* CONCEPT CARDS */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .concept-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .concept-card[data-ai="claude"]::before  { background: var(--claude); }
+  .concept-card[data-ai="chatgpt"]::before { background: var(--chatgpt); }
+  .concept-card[data-ai="gemini"]::before  { background: var(--gemini); }
+  .concept-card[data-ai="copilot"]::before { background: var(--copilot); }
+  .concept-card[data-ai="grok"]::before    { background: var(--grok); }
+  .concept-card[data-ai="spark"]::before   { background: var(--spark); }
+
+  .concept-ai {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .concept-ai-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  .concept-card[data-ai="claude"]  .concept-ai { color: var(--claude); }
+  .concept-card[data-ai="chatgpt"] .concept-ai { color: var(--chatgpt); }
+  .concept-card[data-ai="gemini"]  .concept-ai { color: var(--gemini); }
+  .concept-card[data-ai="copilot"] .concept-ai { color: var(--copilot); }
+  .concept-card[data-ai="grok"]    .concept-ai { color: var(--grok); }
+  .concept-card[data-ai="spark"]   .concept-ai { color: var(--spark); }
+
+  .concept-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sepia);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .concept-body { font-size: 0.8rem; color: var(--warm); line-height: 1.7; }
+
+  /* MAIN GRID — 15講比較 */
+  .main-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  .lecture-block {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .lecture-num-bar {
+    background: linear-gradient(135deg, var(--dahlia), var(--ranunculus));
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .lecture-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+  }
+
+  .lecture-common-theme {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+    margin-left: auto;
+  }
+
+  .lecture-rows {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  @media (max-width: 640px) {
+    .lecture-rows { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 400px) {
+    .lecture-rows { grid-template-columns: 1fr; }
+  }
+
+  .lecture-cell {
+    padding: 0.9rem 1rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.82rem;
+    transition: background 0.2s;
+  }
+
+  .lecture-cell:nth-child(3n) { border-right: none; }
+  .lecture-cell:nth-last-child(-n+3) { border-bottom: none; }
+
+  @media (max-width: 640px) {
+    .lecture-cell:nth-child(2n) { border-right: none; }
+    .lecture-cell:nth-child(3n) { border-right: 1px solid var(--rule); }
+    .lecture-cell:nth-child(odd):last-child { border-right: none; }
+  }
+
+  .lecture-cell:hover { background: var(--dahlia-light); }
+
+  .cell-ai {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .cell-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  .lecture-cell[data-ai="claude"]  .cell-ai { color: var(--claude); }
+  .lecture-cell[data-ai="chatgpt"] .cell-ai { color: var(--chatgpt); }
+  .lecture-cell[data-ai="gemini"]  .cell-ai { color: var(--gemini); }
+  .lecture-cell[data-ai="copilot"] .cell-ai { color: var(--copilot); }
+  .lecture-cell[data-ai="grok"]    .cell-ai { color: var(--grok); }
+  .lecture-cell[data-ai="spark"]   .cell-ai { color: var(--spark); }
+
+  .cell-title {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--sepia);
+    line-height: 1.5;
+  }
+
+  .cell-sub {
+    font-size: 0.72rem;
+    color: var(--warm);
+    margin-top: 0.25rem;
+    line-height: 1.5;
+  }
+
+  /* hidden */
+  .lecture-cell.hidden { display: none; }
+
+  /* UNIQUE HIGHLIGHT */
+  .unique-badge {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.55rem;
+    color: var(--dahlia);
+    border: 1px solid rgba(196,80,106,0.4);
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+    letter-spacing: 0.05em;
+  }
+
+  /* INSIGHTS */
+  .insights {
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    padding: 0 1.5rem;
+  }
+
+  .insights-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--warm);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+
+  .insight-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--warm);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .insight-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dahlia);
+    line-height: 1.2;
+  }
+
+  .insight-sub { font-size: 0.72rem; color: var(--warm); margin-top: 0.3rem; line-height: 1.6; }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--warm);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 2.5rem 1.2rem 2rem; }
+    .overview, .main-wrap, .insights { padding-left: 1rem; padding-right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a class="back-link" href="https://h9966882-max.github.io/study/">← 一覧に戻る</a>
+  <span class="back-sep">/</span>
+  <span class="back-current">アリストテレス集中講義</span>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">🌸 Intensive Course · Aristotle</p>
+    <h1>アリストテレス<br><em>集中講義</em><br>シラバス比較</h1>
+    <div class="ornament">✦</div>
+    <p class="hero-sub">6つのAIが設計した「全15講」を横断比較する</p>
+  </div>
+</div>
+
+<!-- AI LEGEND / FILTER -->
+<div class="legend">
+  <div class="legend-item active" data-ai="all"><span class="legend-dot" style="background:var(--sepia)"></span>全AI</div>
+  <div class="legend-item" data-ai="claude"><span class="legend-dot" style="background:var(--claude)"></span>Claude</div>
+  <div class="legend-item" data-ai="chatgpt"><span class="legend-dot" style="background:var(--chatgpt)"></span>ChatGPT</div>
+  <div class="legend-item" data-ai="gemini"><span class="legend-dot" style="background:var(--gemini)"></span>Gemini</div>
+  <div class="legend-item" data-ai="copilot"><span class="legend-dot" style="background:var(--copilot)"></span>Copilot</div>
+  <div class="legend-item" data-ai="grok"><span class="legend-dot" style="background:var(--grok)"></span>Grok</div>
+  <div class="legend-item" data-ai="spark"><span class="legend-dot" style="background:var(--spark)"></span>Genspark</div>
+</div>
+
+<!-- OVERVIEW: コンセプト比較 -->
+<div class="overview">
+  <div class="overview-title">🌼 各AIの講義コンセプト</div>
+  <div class="concept-grid">
+    <div class="concept-card" data-ai="claude">
+      <div class="concept-ai"><div class="concept-ai-dot" style="background:var(--claude)"></div>Claude</div>
+      <div class="concept-title">6部構成・地上から宇宙へ</div>
+      <div class="concept-body">基礎→自然・宇宙→心・知識→倫理・政治→芸術・修辞→総括。宇宙論（天と地・不動の動者）を独立パートとして設けた。</div>
+    </div>
+    <div class="concept-card" data-ai="chatgpt">
+      <div class="concept-ai"><div class="concept-ai-dot" style="background:var(--chatgpt)"></div>ChatGPT</div>
+      <div class="concept-title">5部構成・思考OS構築</div>
+      <div class="concept-body">「世界をどう整理し理解するか」という思考OS構築が目的。理解・思考・運用の3層達成目標を設定。ワーク課題が各講に付く。</div>
+    </div>
+    <div class="concept-card" data-ai="gemini">
+      <div class="concept-ai"><div class="concept-ai-dot" style="background:var(--gemini)"></div>Gemini</div>
+      <div class="concept-title">3部構成・知の宇宙めぐり</div>
+      <div class="concept-body">思考のOS→自然・生命・魂→人間という流れ。第Ⅱ部に「宇宙の階層構造」「生命の階層」「クジラの発見」など自然科学を濃密配置。</div>
+    </div>
+    <div class="concept-card" data-ai="copilot">
+      <div class="concept-ai"><div class="concept-ai-dot" style="background:var(--copilot)"></div>Copilot</div>
+      <div class="concept-title">3部構成・入門〜上級段階式</div>
+      <div class="concept-body">基礎編→倫理・政治→科学・形而上学の順。他のAIにない「知性論（能動知性・受動知性）」「友情論」を独立講義として設置。</div>
+    </div>
+    <div class="concept-card" data-ai="grok">
+      <div class="concept-ai"><div class="concept-ai-dot" style="background:var(--grok)"></div>Grok</div>
+      <div class="concept-title">4段階・最も網羅的</div>
+      <div class="concept-body">基礎（道具）→理論哲学→実践哲学→応用・影響。論理学を2講（カテゴリー+三段論法）に分割。修辞学・詩学を1講に統合。</div>
+    </div>
+    <div class="concept-card" data-ai="spark">
+      <div class="concept-ai"><div class="concept-ai-dot" style="background:var(--spark)"></div>Genspark</div>
+      <div class="concept-title">全体像→方法→自然→人間</div>
+      <div class="concept-body">学問の分類を第2講に独立配置。各回を入門・中級・上級の3層で読める設計。補助パーツ（復習・深掘り・質疑・まとめ）のフォーマット提案あり。</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN: 15講比較 -->
+<div class="main-wrap">
+  <div class="overview-title">🌸 全15講 タイトル比較</div>
+  <div id="lectures-wrap"></div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="insights">
+  <div class="insights-title">✦ 比較から見えること</div>
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-label">全AI共通テーマ</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--sepia)">プラトン批判・四原因説・エウダイモニア・中庸・政治学</div>
+      <div class="insight-sub">この5テーマは必ず含まれる</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Claude独自</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--claude)">宇宙論2講（天と地・不動の動者）</div>
+      <div class="insight-sub">宇宙論を独立パートとして最も詳しく扱う</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Gemini独自</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--gemini)">クジラの発見・生命の階層</div>
+      <div class="insight-sub">自然科学・生物学に最も力を入れた構成</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Copilot独自</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--copilot)">友情論・知性論</div>
+      <div class="insight-sub">能動知性・受動知性・友情の3類型を独立設置</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">ChatGPT独自</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--chatgpt)">ワーク課題・思考OS</div>
+      <div class="insight-sub">各講に実践ワークを設定。最も「運用」を重視。</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Genspark独自</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--spark)">学問分類を第2講に</div>
+      <div class="insight-sub">理論的・実践的・制作的学の三分類を早期に独立</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Grok独自</div>
+      <div class="insight-value" style="font-size:1rem;color:var(--grok)">論理学を2講に分割</div>
+      <div class="insight-sub">カテゴリー論と三段論法を別講として最も丁寧に扱う</div>
+    </div>
+  </div>
+</div>
+
+<footer>「一つずつ丁寧に観察せよ」— アリストテレス 🌸</footer>
+
+<script>
+const AI_KEYS   = ['claude','chatgpt','gemini','copilot','grok','spark'];
+const AI_LABELS = ['Claude','ChatGPT','Gemini','Copilot','Grok','Genspark'];
+const AI_COLORS = {
+  claude:'#c9a84c', chatgpt:'#10a37f', gemini:'#4285f4',
+  copilot:'#0078d4', grok:'#e04444', spark:'#9b59b6'
+};
+
+// 15講 × 6AI のデータ
+// [講義番号, AI, タイトル, サブタイトル]
+const lectures = [
+  // 第1講
+  { n:1, ai:'claude',  title:'プラトンからの離脱', sub:'イデア論批判・形相の内在化' },
+  { n:1, ai:'chatgpt', title:'アリストテレスとは誰か', sub:'プラトンとの決別・学問体系化' },
+  { n:1, ai:'gemini',  title:'言葉を整理する技術', sub:'範疇論（カテゴリ論）と概念の解剖' },
+  { n:1, ai:'copilot', title:'アリストテレスとは誰か', sub:'生涯・"常識の哲学者"という評価' },
+  { n:1, ai:'grok',    title:'アリストテレスの生涯と全体像', sub:'生い立ち・著作の性質・万学の祖' },
+  { n:1, ai:'spark',   title:'アリストテレスとは誰か', sub:'生涯・学問全体の地図・プラトンとの関係' },
+
+  // 第2講
+  { n:2, ai:'claude',  title:'質料と形相', sub:'ヒュレーとエイドスの構造' },
+  { n:2, ai:'chatgpt', title:'存在とは何か', sub:'実体・属性・「ある」の意味' },
+  { n:2, ai:'gemini',  title:'論理学の誕生', sub:'三段論法と『分析論前書』' },
+  { n:2, ai:'copilot', title:'プラトンとの決別', sub:'形相とイデアの違い・内在的本質主義' },
+  { n:2, ai:'grok',    title:'論理学の基礎 ─ カテゴリーと命題', sub:'10のカテゴリー・実体の多義性' },
+  { n:2, ai:'spark',   title:'学問はどう分類されるのか', sub:'理論的学・実践的学・制作的学' },
+
+  // 第3講
+  { n:3, ai:'claude',  title:'四原因説', sub:'質料因・形相因・作動因・目的因' },
+  { n:3, ai:'chatgpt', title:'カテゴリー論', sub:'世界をどう整理するか・10カテゴリー' },
+  { n:3, ai:'gemini',  title:'師プラトンへの挑戦', sub:'『形而上学』と実体論' },
+  { n:3, ai:'copilot', title:'四原因説の全体像', sub:'質料・形相・作用・目的の4原理' },
+  { n:3, ai:'grok',    title:'三段論法と証明の理論', sub:'演繹・帰納・科学的証明（apodeixis）' },
+  { n:3, ai:'spark',   title:'論理学入門', sub:'正しく考えるとは何か・三段論法' },
+
+  // 第4講
+  { n:4, ai:'claude',  title:'可能態と現実態', sub:'デュナミス・エネルゲイア・エンテレケイア' },
+  { n:4, ai:'chatgpt', title:'四原因説', sub:'質料・形相・作用・目的・現代科学が捨てたもの' },
+  { n:4, ai:'gemini',  title:'なぜ世界は動くのか', sub:'四因説と変化のメカニズム' },
+  { n:4, ai:'copilot', title:'自然学：運動・変化・可能態と現実態', sub:'現代科学との比較' },
+  { n:4, ai:'grok',    title:'自然哲学の基礎 ─ 変化と四原因', sub:'可能態・現実態・目的論と近代機械論' },
+  { n:4, ai:'spark',   title:'定義・分類・カテゴリー', sub:'「何であるか」と捉える方法' },
+
+  // 第5講
+  { n:5, ai:'claude',  title:'自然学：運動と変化', sub:'場所・時間・連続性・真空を嫌う自然' },
+  { n:5, ai:'chatgpt', title:'可能態と現実態', sub:'潜在性の哲学・「才能とは何か？」' },
+  { n:5, ai:'gemini',  title:'可能性から現実への大ジャンプ', sub:'可能態と現実態のダイナミズム' },
+  { n:5, ai:'copilot', title:'論理学：三段論法とカテゴリー論', sub:'形式論理の誕生とその限界' },
+  { n:5, ai:'grok',    title:'宇宙と運動の哲学', sub:'場所・時間・不動の動者・地球中心説' },
+  { n:5, ai:'spark',   title:'自然を説明するとは何か', sub:'四原因説の全体像・なぜ4つ必要か' },
+
+  // 第6講
+  { n:6, ai:'claude',  title:'宇宙論：天と地', sub:'月下界と天上界・五元素（エーテル）' },
+  { n:6, ai:'chatgpt', title:'形相と質料', sub:'ヒュレー・エイドス・AIに本質は存在するか？' },
+  { n:6, ai:'gemini',  title:'世界の境界線を引く', sub:'『自然学』と宇宙の階層構造' },
+  { n:6, ai:'copilot', title:'幸福（エウダイモニア）とは何か', sub:'活動としての幸福・現代ウェルビーイング論' },
+  { n:6, ai:'grok',    title:'魂の哲学（心理学）', sub:'魂の階層・形質論・心身問題の原型' },
+  { n:6, ai:'spark',   title:'形相と質料', sub:'世界のものは何から成るのか・プラトンとの違い' },
+
+  // 第7講
+  { n:7, ai:'claude',  title:'不動の動者', sub:'宇宙に「動かない動かすもの」が必要な理由' },
+  { n:7, ai:'chatgpt', title:'論理学と三段論法', sub:'カテゴリー論・2000年間変わらなかった理由' },
+  { n:7, ai:'gemini',  title:'生きているとはどういうことか', sub:'『生命論』と魂の定義' },
+  { n:7, ai:'copilot', title:'中庸の徳：実践的知（フロネーシス）', sub:'"平均"ではなく"状況判断"としての中庸' },
+  { n:7, ai:'grok',    title:'生物学と観察科学', sub:'分類学・発生観察・進化生物学との親和性' },
+  { n:7, ai:'spark',   title:'可能態と現実態', sub:'「なる」とはどういうことか・変化の哲学' },
+
+  // 第8講
+  { n:8, ai:'claude',  title:'魂論（デ・アニマ）', sub:'魂の三層構造・能動知性の謎' },
+  { n:8, ai:'chatgpt', title:'定義と概念', sub:'属・種差・本質定義・「愛は定義可能か？」' },
+  { n:8, ai:'gemini',  title:'植物・動物・人間のグラデーション', sub:'生命の階層構造' },
+  { n:8, ai:'copilot', title:'友情論：最高の友情とは何か', sub:'快楽・有用・徳の3種類の友情' },
+  { n:8, ai:'grok',    title:'形而上学入門 ─ 存在と実体', sub:'第一哲学・プラトン批判・存在の多義性' },
+  { n:8, ai:'spark',   title:'目的論', sub:'自然には「何のため」があるのか・機械論との違い' },
+
+  // 第9講
+  { n:9, ai:'claude',  title:'論理学と三段論法', sub:'カテゴリー論・推論の構造' },
+  { n:9, ai:'chatgpt', title:'知識とは何か', sub:'経験知・技術知・学問知・原理' },
+  { n:9, ai:'gemini',  title:'クジラは魚ではない？', sub:'万学の祖のガチすぎる『動物誌』' },
+  { n:9, ai:'copilot', title:'政治学：人間はポリス的動物である', sub:'市民・憲政・最良の国家' },
+  { n:9, ai:'grok',    title:'形而上学深掘り ─ 神と第一原理', sub:'不動の動者・中世スコラへの影響' },
+  { n:9, ai:'spark',   title:'魂とは何か', sub:'生きるものの原理・植物・動物・人間の働き' },
+
+  // 第10講
+  { n:10, ai:'claude',  title:'ニコマコス倫理学①：エウダイモニア', sub:'最高善とは何か・なぜ快楽主義では足りないか' },
+  { n:10, ai:'chatgpt', title:'エウダイモニア', sub:'幸福とは何か・快楽と幸福を区別する' },
+  { n:10, ai:'gemini',  title:'世界を動かす最初のドミノ', sub:'不動の動者（神）の証明' },
+  { n:10, ai:'copilot', title:'詩学：悲劇・カタルシス・ミメーシス', sub:'芸術の本質と感情浄化' },
+  { n:10, ai:'grok',    title:'倫理学の基礎 ─ 幸福と中庸', sub:'eudaimonia・徳＝中庸・習慣の重要性' },
+  { n:10, ai:'spark',   title:'認識・感覚・知性', sub:'人はどのように知るのか・感覚から知へ' },
+
+  // 第11講
+  { n:11, ai:'claude',  title:'ニコマコス倫理学②：徳と中庸', sub:'習慣形成・中庸の理論・知性的徳vs倫理的徳' },
+  { n:11, ai:'chatgpt', title:'徳倫理学', sub:'人格形成の哲学・「人は変われるのか？」' },
+  { n:11, ai:'gemini',  title:'最高の幸せの見つけ方', sub:'『ニコマコス倫理学』とエウダイモニア' },
+  { n:11, ai:'copilot', title:'生物学：観察と分類の科学', sub:'分類学の基礎・ダーウィン以前の生物学' },
+  { n:11, ai:'grok',    title:'倫理学展開 ─ 知的徳と友愛', sub:'phronesis（賢慮）・友愛の3類型' },
+  { n:11, ai:'spark',   title:'倫理学入門', sub:'人間にとっての善とは何か・エウダイモニア' },
+
+  // 第12講
+  { n:12, ai:'claude',  title:'友愛論（フィリア）と政治学', sub:'三種の友愛・ゾーオン・ポリティコン' },
+  { n:12, ai:'chatgpt', title:'中庸', sub:'適切さとは何か・過剰・不足・実践知' },
+  { n:12, ai:'gemini',  title:'行きすぎず、足らなすぎず', sub:'「中庸（ちゅうよう）」の美徳' },
+  { n:12, ai:'copilot', title:'形而上学：存在論の核心', sub:'存在の多義性・第一哲学とは何か' },
+  { n:12, ai:'grok',    title:'政治学Ⅰ ─ 人間と国家', sub:'人間は政治的動物・政体分類・共同体主義の源流' },
+  { n:12, ai:'spark',   title:'徳と中庸', sub:'よい人格はどう作られるのか・習慣の重要性' },
+
+  // 第13講
+  { n:13, ai:'claude',  title:'詩学とカタルシス', sub:'悲劇の定義・ミメーシス・感情浄化' },
+  { n:13, ai:'chatgpt', title:'政治学', sub:'人間は共同体的存在・ポリス・市民・統治' },
+  { n:13, ai:'gemini',  title:'人間は1人では生きられない', sub:'『政治学』とポリス（社会）の本質' },
+  { n:13, ai:'copilot', title:'政治学Ⅱ ─ 理想と現実', sub:'最善政体・教育・全体主義批判との関係' },
+  { n:13, ai:'grok',    title:'政治学Ⅱ ─ 理想と現実', sub:'最善政体・教育・法の役割' },
+  { n:13, ai:'spark',   title:'友愛・共同体・政治', sub:'人はなぜ共同体を必要とするのか' },
+
+  // 第14講
+  { n:14, ai:'claude',  title:'修辞学', sub:'ロゴス・エトス・パトスの三要素' },
+  { n:14, ai:'chatgpt', title:'詩学', sub:'物語構造・ミメーシス・カタルシス' },
+  { n:14, ai:'gemini',  title:'心を動かす言葉の魔術', sub:'『弁論術』と3つの説得要素' },
+  { n:14, ai:'copilot', title:'知性論：能動知性と受動知性', sub:'イスラーム哲学・中世スコラへの影響' },
+  { n:14, ai:'grok',    title:'修辞学・詩学・芸術論', sub:'説得の3要素・悲劇のカタルシス・物語論' },
+  { n:14, ai:'spark',   title:'表現・説得・芸術', sub:'修辞と詩は哲学とどう関わるか' },
+
+  // 第15講
+  { n:15, ai:'claude',  title:'アリストテレスの2500年', sub:'中世・イスラム・近代科学・現代での再評価' },
+  { n:15, ai:'chatgpt', title:'アリストテレス総合講義', sub:'全体系統合・科学との関係・限界と批判' },
+  { n:15, ai:'gemini',  title:'涙と感動のメカニズム', sub:'『詩学』と悲劇の「カタルシス」' },
+  { n:15, ai:'copilot', title:'アリストテレスの遺産', sub:'イスラーム→スコラ→近代→現代への連続性' },
+  { n:15, ai:'grok',    title:'アリストテレスの遺産と現代的意義', sub:'20世紀復興・AI時代・環境危機での再読' },
+  { n:15, ai:'spark',   title:'総合：プラトンから何を継ぎ、何を変えたのか', sub:'体系としてのアリストテレス・哲学史の流れ' },
+];
+
+const COMMON_THEMES = ['プラトン批判','四原因説','エウダイモニア','中庸','政治学（ポリス）'];
+
+let currentAI = 'all';
+
+function render() {
+  const wrap = document.getElementById('lectures-wrap');
+  wrap.innerHTML = '';
+
+  for (let n = 1; n <= 15; n++) {
+    const block = document.createElement('div');
+    block.className = 'lecture-block';
+
+    const bar = document.createElement('div');
+    bar.className = 'lecture-num-bar';
+    bar.innerHTML = `<span class="lecture-num">第 ${n} 講</span>`;
+    block.appendChild(bar);
+
+    const rows = document.createElement('div');
+    rows.className = 'lecture-rows';
+
+    const filtered = currentAI === 'all'
+      ? lectures.filter(l => l.n === n)
+      : lectures.filter(l => l.n === n && l.ai === currentAI);
+
+    filtered.forEach(l => {
+      const cell = document.createElement('div');
+      cell.className = 'lecture-cell';
+      cell.dataset.ai = l.ai;
+
+      cell.innerHTML = `
+        <div class="cell-ai">
+          <div class="cell-dot" style="background:${AI_COLORS[l.ai]}"></div>
+          ${AI_LABELS[AI_KEYS.indexOf(l.ai)]}
+        </div>
+        <div class="cell-title">${l.title}</div>
+        ${l.sub ? `<div class="cell-sub">${l.sub}</div>` : ''}
+      `;
+
+      rows.appendChild(cell);
+    });
+
+    block.appendChild(rows);
+    wrap.appendChild(block);
+  }
+}
+
+// filter
+document.querySelectorAll('.legend-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.legend-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    currentAI = item.dataset.ai;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
